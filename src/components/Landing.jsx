@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "../styles/landing.css";
 import {
   GraduationCap,
   CalendarClock,
@@ -74,10 +75,50 @@ const THEMES = {
   },
 };
 
+function ThemeSwitcher({ compact, t, themeKey, setThemeKey }) {
+  return (
+    <div className="flex items-center gap-2">
+      {!compact && (
+        <Palette className="h-3.5 w-3.5" style={{ color: `${t.textBase}99` }} />
+      )}
+      {Object.entries(THEMES).map(([key, theme]) => (
+        <button
+          key={key}
+          onClick={() => setThemeKey(key)}
+          title={theme.label}
+          aria-label={`Use ${theme.label} theme`}
+          className="h-6 w-6 rounded-full transition-transform hover:-translate-y-0.5"
+          style={{
+            background: `linear-gradient(135deg, ${theme.ink} 50%, ${theme.accent} 50%)`,
+            boxShadow:
+              themeKey === key
+                ? `0 0 0 2px ${t.paper}, 0 0 0 4px ${theme.accent}`
+                : `0 0 0 1px ${t.rule}`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function SchoolManagementLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [themeKey, setThemeKey] = useState("chalkboard");
+  const [isNavbarHidden, setIsNavbarHidden] = useState(false);
   const t = THEMES[themeKey];
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsNavbarHidden(window.scrollY > 300);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   const nav = [
     { label: "Platform", href: "#platform" },
@@ -168,30 +209,6 @@ export default function SchoolManagementLanding() {
     },
   ];
 
-  const ThemeSwitcher = ({ compact }) => (
-    <div className={`flex items-center gap-2 ${compact ? "" : ""}`}>
-      {!compact && (
-        <Palette className="h-3.5 w-3.5" style={{ color: `${t.textBase}99` }} />
-      )}
-      {Object.entries(THEMES).map(([key, theme]) => (
-        <button
-          key={key}
-          onClick={() => setThemeKey(key)}
-          title={theme.label}
-          aria-label={`Use ${theme.label} theme`}
-          className="h-6 w-6 rounded-full transition-transform hover:-translate-y-0.5"
-          style={{
-            background: `linear-gradient(135deg, ${theme.ink} 50%, ${theme.accent} 50%)`,
-            boxShadow:
-              themeKey === key
-                ? `0 0 0 2px ${t.paper}, 0 0 0 4px ${theme.accent}`
-                : `0 0 0 1px ${t.rule}`,
-          }}
-        />
-      ))}
-    </div>
-  );
-
   return (
     <div
       className="min-h-screen w-full font-[Inter,sans-serif] transition-colors duration-300"
@@ -218,7 +235,9 @@ export default function SchoolManagementLanding() {
 
       {/* NAV */}
       <header
-        className="sticky top-0 z-40 border-b backdrop-blur"
+        className={`landing-navbar sticky top-0 z-40 border-b backdrop-blur ${
+          isNavbarHidden ? "landing-navbar--hidden" : ""
+        }`}
         style={{ borderColor: t.rule, backgroundColor: `${t.paper}E6` }}
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -246,7 +265,7 @@ export default function SchoolManagementLanding() {
           </nav>
 
           <div className="hidden items-center gap-5 md:flex">
-            <ThemeSwitcher />
+            <ThemeSwitcher t={t} themeKey={themeKey} setThemeKey={setThemeKey} />
             <a href="#" className="text-sm font-medium" style={{ color: `${t.textBase}B3` }}>
               Sign in
             </a>
@@ -273,7 +292,12 @@ export default function SchoolManagementLanding() {
                 </a>
               ))}
               <div className="mt-1">
-                <ThemeSwitcher />
+                <ThemeSwitcher
+                  compact
+                  t={t}
+                  themeKey={themeKey}
+                  setThemeKey={setThemeKey}
+                />
               </div>
               <a
                 href="#pricing"

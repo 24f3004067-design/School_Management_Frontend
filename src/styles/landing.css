@@ -1,0 +1,13 @@
+.landing-navbar {
+  transition:
+    transform 240ms ease,
+    opacity 240ms ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.landing-navbar--hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}

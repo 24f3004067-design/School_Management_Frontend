@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/landing.css";
+import heroToy from "../assets/hero.png";
 import {
   GraduationCap,
   CalendarClock,
@@ -363,6 +364,11 @@ export default function SchoolManagementLanding() {
 
           {/* SIGNATURE ELEMENT: hall-pass style schedule card */}
           <div className="relative mx-auto w-full max-w-sm rotate-2">
+            <img
+              src={heroToy}
+              alt="Running school mascot toy"
+              className="hero-toy-run absolute -bottom-9 -right-8 z-20 w-28 sm:w-32"
+            />
             <div
               className="perforated absolute left-0 top-6 h-[calc(100%-3rem)] w-6 rounded-l-xl"
               style={{ backgroundColor: t.paper }}
